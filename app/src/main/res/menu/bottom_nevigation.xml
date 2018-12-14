@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/ic_fb"
+        android:icon="@drawable/ic_fb"
+        android:title="facebook"/>
+
+    <item
+        android:id="@+id/ic_insta"
+        android:icon="@drawable/ic_insta"
+        android:title="instagram">
+
+    </item>
+    <item
+        android:id="@+id/ic_twitter"
+        android:icon="@drawable/ic_twitte"
+        android:title="twitter">
+
+    </item>
+    <item
+        android:id="@+id/ic_tumblr"
+        android:icon="@drawable/ic_tum"
+        android:title="tumblr">
+
+    </item>
+    <item
+        android:id="@+id/ic_gplus"
+        android:icon="@drawable/ic_gplus"
+        android:title="google plus">
+    </item>
+
+
+</menu>

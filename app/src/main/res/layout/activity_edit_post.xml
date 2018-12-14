@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/newbg"
+    tools:context=".Post.EditPostActivity">
+
+    <ImageView
+        android:id="@+id/edit_post_image"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentTop="false"
+        app:srcCompat="@drawable/select_image" />
+
+    <TextView
+        android:id="@+id/edit_post_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_post_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="Post Description"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+
+        android:padding="15dp"
+        android:background="@drawable/inputs_ediit_design"/>
+
+    <Button
+        android:id="@+id/post_edit_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/post_delete_button"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="Edit Post"
+        android:background="@color/black"
+        android:textSize="18sp"
+        android:textColor="@android:color/background_light"/>
+
+    <Button
+        android:id="@+id/post_delete_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="Delete Post"
+        android:background="@color/black"
+        android:textSize="18sp"
+        android:textColor="@android:color/holo_red_dark"/>
+</RelativeLayout>

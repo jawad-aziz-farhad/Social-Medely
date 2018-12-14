@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Social-Medely-App</string>
+    <string name="drawer_open">Drawer Open</string>
+    <string name="drawer_close">Drawer Close</string>
+    <string name="facebook_app_id">1137949309685607</string>
+    <string name="fb_login_protocol_scheme">fb1137949309685607</string>
+</resources>

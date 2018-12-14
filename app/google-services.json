@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "873099571489",
+    "firebase_url": "https://socail-medely-app.firebaseio.com",
+    "project_id": "socail-medely-app",
+    "storage_bucket": "socail-medely-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:873099571489:android:076a7c3466c0700c",
+        "android_client_info": {
+          "package_name": "com.example.usman.social_medely_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "873099571489-4997gl6tetkf8kki3obndsth2064bjom.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.usman.social_medely_app",
+            "certificate_hash": "2c7dadec38c680b602bcd3920875f91c120aeb0f"
+          }
+        },
+        {
+          "client_id": "873099571489-u1brn30ja5jdnbrbqk2nds64rpjag888.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjPrmdiB-FY_BiCBeC5GXIzhCNBHW9BV4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "873099571489-u1brn30ja5jdnbrbqk2nds64rpjag888.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
