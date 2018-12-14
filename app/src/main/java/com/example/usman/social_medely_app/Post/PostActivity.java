@@ -74,6 +74,7 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -453,7 +454,7 @@ public class PostActivity extends AppCompatActivity {
 
    }
 
-    public class TumblrPostAsyncTask extends AsyncTask<String, String, Token> {
+    public class TumblrPostAsyncTask extends AsyncTask<String, String, String> {
 
         @Override
         protected void onPreExecute() {
@@ -461,30 +462,54 @@ public class PostActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Token doInBackground(String... params) {
-            Token token = null;
+        protected String doInBackground(String... params) {
+            String result = null;
             try {
 
-                JumblrClient client = new JumblrClient("consumer_key", "consumer_secret");
-                client.setToken("oauth_token", "oauth_token_secret");
+                JumblrClient client = new JumblrClient(Constants.TUBMLR_CONSUMER_KEY, Constants.TUBMLR_CONSUMER_SECRET);
+                client.setToken(Constants.TUMBLR_TOKEN, Constants.TUMBLR_TOKEN_SECRET);
 
                 // Write the user's name
                 User user = client.user();
-                System.out.println(user.getName());
+                Log.w("User Name: ",user.getName());
 
+                PhotoPost post = client.newPost("blog name", PhotoPost.class);
+
+                post.setCaption(PostDescription.getText().toString());
+                post.setSource(encodedImage());
+                post.save();
+
+                result = "Post published on Tumblr successfully.";
 
             } catch (Exception e) {
-                Log.w(TAG, "Tumblr's login Error: " + e.getMessage());
+                Log.w(TAG, "Tumblr's Error: " + e.getMessage());
+                result = e.getMessage();
             }
 
-           return token;
+           return result;
         }
 
         @Override
-        protected void onPostExecute(Token s) {
+        protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
             Log.w(TAG, "On Post Execute: " + s);
+        }
+
+        private String encodedImage()
+        {
+            try {
+                final InputStream imageStream = getContentResolver().openInputStream(ImageUri);
+                final Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] b = baos.toByteArray();
+                String encImage = Base64.encodeToString(b, Base64.DEFAULT);
+                return encImage;
+            }
+            catch (FileNotFoundException e){ e.printStackTrace(); }
+
+            return null;
         }
     }
 
