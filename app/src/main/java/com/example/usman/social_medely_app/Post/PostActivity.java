@@ -3,13 +3,17 @@ package com.example.usman.social_medely_app.Post;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telecom.Call;
@@ -91,6 +95,7 @@ import java.util.List;
 public class PostActivity extends AppCompatActivity {
 
     private static final String TAG = PostActivity.class.getSimpleName();
+    private static final int INSTAGRAM_REQUEST_CODE = 1100;
     private Toolbar mToolbar;
 
     private ImageButton SelectPostImage;
@@ -154,13 +159,9 @@ public class PostActivity extends AppCompatActivity {
         UpdatePostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // ValidatePostInformation();
 
-               // shareOnFacebook();
-
-               // shareOnInstagram();
-
-                logintoTumblr();
+                ValidatePostInformation();
+               // logintoTumblr();
             }
         });
     }
@@ -203,6 +204,9 @@ public class PostActivity extends AppCompatActivity {
                     Toast.makeText(PostActivity.this, "Image uploaded successfully.", Toast.LENGTH_SHORT).show();
 
                     SavingPostInformationToDatabase();
+
+                    shareOnFacebook();
+
                 } else {
                     String message = task.getException().getMessage();
                     Toast.makeText(PostActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
@@ -254,7 +258,7 @@ public class PostActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task task) {
                                     if (task.isSuccessful()) {
-                                        SendUserToMainActivity();
+                                        //SendUserToMainActivity();
                                         Toast.makeText(PostActivity.this, "New Post is updated successfully.", Toast.LENGTH_SHORT).show();
                                         loadingBar.dismiss();
                                     } else {
@@ -290,6 +294,16 @@ public class PostActivity extends AppCompatActivity {
 
         if (requestCode == CallbackManagerImpl.RequestCodeOffset.Login.toRequestCode()) {
             callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
+
+        else if (requestCode == CallbackManagerImpl.RequestCodeOffset.Share.toRequestCode()) {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
+
+        else if(requestCode == INSTAGRAM_REQUEST_CODE){
+            Log.w(TAG, "Instagram Activity Result "+ data);
+            Toast.makeText(PostActivity.this, "Successfully shared on Instagram.", Toast.LENGTH_SHORT).show();
+            SendUserToMainActivity();
         }
 
         else if (requestCode == GalleryPick && resultCode == RESULT_OK && data != null) {
@@ -359,6 +373,7 @@ public class PostActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancel() {
+                        Toast.makeText(PostActivity.this,"Can't share the post", Toast.LENGTH_LONG).show();
                     }
 
                     @Override
@@ -396,13 +411,21 @@ public class PostActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Sharer.Result result) {
                 Log.w(TAG, "Share Result " + result.toString());
+                Toast.makeText(PostActivity.this, "Successfully shared on Facebook.", Toast.LENGTH_LONG).show();
+                shareOnInstagram();
             }
             @Override
-            public void onCancel() { }
+            public void onCancel() {
+                Log.w(TAG, "facebook share cancelled.");
+                Toast.makeText(PostActivity.this, "sorry! coudn't share on Facebook.", Toast.LENGTH_LONG).show();
+                shareOnInstagram();
+            }
 
             @Override
             public void onError(FacebookException error) {
-
+                Log.w(TAG, "facebook share error.");
+                Toast.makeText(PostActivity.this, "sorry! coudn't share on Facebook.", Toast.LENGTH_LONG).show();
+                shareOnInstagram();
             }
         });
         shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
@@ -413,27 +436,35 @@ public class PostActivity extends AppCompatActivity {
     | Sharing on Instagram
     |------------------------
     */
-    private void shareOnInstagram() {
-        Uri stickerAssetUri = ImageUri;
-        String attributionLinkUrl = "https://www.my-aweseome-app.com/p/BhzbIOUBval/";
+    private void shareOnInstagram(){
+        Intent intent = getPackageManager().getLaunchIntentForPackage("com.instagram.android");
+        if (intent != null)
+        {
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.setPackage("com.instagram.android");
+            shareIntent.putExtra(Intent.EXTRA_STREAM, ImageUri);
+            shareIntent.setType("image/*");
 
-        // sticker asset, background colors, and attribution link
-        Intent intent = new Intent("com.instagram.share.ADD_TO_STORY");
-        intent.setType("image/*");
-        intent.putExtra("interactive_asset_uri", stickerAssetUri);
-        intent.putExtra("content_url", attributionLinkUrl);
-        intent.putExtra("top_background_color",    "#a0179e");
-        intent.putExtra("bottom_background_color", "#3b5999");
-
-        // Instantiate activity and verify it will resolve implicit intent
-        Activity activity = PostActivity.this;
-        activity.grantUriPermission("com.instagram.android", stickerAssetUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        if (activity.getPackageManager().resolveActivity(intent, 0) != null) {
-            activity.startActivityForResult(intent, 0);
+            Activity activity = PostActivity.this;
+            activity.grantUriPermission("com.instagram.android", ImageUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            if (activity.getPackageManager().resolveActivity(shareIntent, 0) != null) {
+                activity.startActivityForResult(shareIntent, INSTAGRAM_REQUEST_CODE);
+            }
+            else
+                Toast.makeText(activity, "Please intall Instagram app on your device.", Toast.LENGTH_LONG).show();
         }
         else
-            Toast.makeText(activity, "Please intall Instagram app on your device.", Toast.LENGTH_LONG).show();
+        {
+            // bring user to the market to download the app.
+            // or let them choose an app?
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setData(Uri.parse("market://details?id="+"com.instagram.android"));
+            startActivity(intent);
+        }
     }
+
 
    /*
    |------------------------
@@ -442,7 +473,6 @@ public class PostActivity extends AppCompatActivity {
    */
    private void logintoTumblr() {
       new TumblrPostAsyncTask().execute();
-
    }
 
    /*
@@ -465,18 +495,17 @@ public class PostActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String result = null;
             try {
-
                 JumblrClient client = new JumblrClient(Constants.TUBMLR_CONSUMER_KEY, Constants.TUBMLR_CONSUMER_SECRET);
                 client.setToken(Constants.TUMBLR_TOKEN, Constants.TUMBLR_TOKEN_SECRET);
-
                 // Write the user's name
                 User user = client.user();
                 Log.w("User Name: ",user.getName());
-
-                PhotoPost post = client.newPost("blog name", PhotoPost.class);
-
+                //Make the request
+                PhotoPost post = client.newPost(user.getName()+ ".tumblr.com", PhotoPost.class);
                 post.setCaption(PostDescription.getText().toString());
-                post.setSource(encodedImage());
+                String image = encodedImage();
+                Log.w(TAG, "Encoded Image: " + image);
+                post.setSource(image);
                 post.save();
 
                 result = "Post published on Tumblr successfully.";
@@ -492,7 +521,6 @@ public class PostActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-
             Log.w(TAG, "On Post Execute: " + s);
         }
 
@@ -504,8 +532,7 @@ public class PostActivity extends AppCompatActivity {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] b = baos.toByteArray();
-                String encImage = Base64.encodeToString(b, Base64.DEFAULT);
-                return encImage;
+                return Base64.encodeToString(b, Base64.DEFAULT);
             }
             catch (FileNotFoundException e){ e.printStackTrace(); }
 
