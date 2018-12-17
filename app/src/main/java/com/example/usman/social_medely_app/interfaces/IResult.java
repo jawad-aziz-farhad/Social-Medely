@@ -9,6 +9,8 @@ import org.json.JSONObject;
  */
 
 public interface IResult {
-    void onSuccess(String requestType, JSONObject result);
-    void onError(String requestType, VolleyError error);
+
+    void onSuccess(String result);
+    void onError(String error);
+
 }
