@@ -336,7 +336,6 @@ public class MainActivity extends AppCompatActivity
                     }
                 };
         postList.setAdapter(firebaseRecyclerAdapter);
-
         updateUserStatus("online");
     }
 

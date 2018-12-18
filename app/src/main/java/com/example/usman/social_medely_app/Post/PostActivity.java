@@ -138,8 +138,7 @@ public class PostActivity extends AppCompatActivity {
         UpdatePostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               //ValidatePostInformation();
-                checkTumblrStatus();
+                ValidatePostInformation();
             }
         });
 
@@ -287,7 +286,8 @@ public class PostActivity extends AppCompatActivity {
 
         else if(requestCode == INSTAGRAM_REQUEST_CODE){
             Log.w(TAG, "Instagram Activity Result "+ data);
-            Toast.makeText(PostActivity.this, "Successfully shared on Instagram.", Toast.LENGTH_SHORT).show();
+            if(data != null)
+                Toast.makeText(PostActivity.this, "Successfully shared on Instagram.", Toast.LENGTH_SHORT).show();
             checkTumblrStatus();
         }
 
@@ -513,41 +513,25 @@ public class PostActivity extends AppCompatActivity {
             loginToTumblr();
     }
 
-
-
   /*
   |------------------------
   |  Logging in to Tumblr
   |------------------------
   */
    private void loginToTumblr(){
-       Loglr loglr = Loglr.INSTANCE;
-       if(loglr != null) {
-           loglr.setConsumerKey(Constants.TUBMLR_CONSUMER_KEY);
-           loglr.setConsumerSecretKey(Constants.TUBMLR_CONSUMER_SECRET);
-           loglr.setUrlCallBack("https://www.retime.co.uk/");
-           loglr.setLoginListener(new LoginListener() {
-               @Override
-               public void onLoginSuccessful(com.tumblr.loglr.LoginResult loginResult) {
-               String oAuthToken = loginResult.getOAuthToken();
-               String oAuthTokenSecret = loginResult.getOAuthTokenSecret();
-               Log.w(TAG, oAuthToken + "\n" + oAuthTokenSecret);
-               tumblrSessionManager.setTumblrTokens(oAuthToken, oAuthTokenSecret);
-               shareOnTumblr();
 
-               }
-           });
-           loglr.setExceptionHandler(new ExceptionHandler() {
-               @Override
-               public void onLoginFailed(RuntimeException e) {
-                   Log.e(TAG, "Loglr Exeception: " + e.getMessage());
-                   Toast.makeText(PostActivity.this, "Sorry! can't login to the tumblr.", Toast.LENGTH_LONG).show();
-               }
-           });
-           loglr.initiate(PostActivity.this);
+    IResult iResult = new IResult() {
+       @Override
+       public void onSuccess(String result) {
+           shareOnTumblr();
        }
-       else
-           Toast.makeText(PostActivity.this, "Something went wrong while Loggin in to Tumblr.", Toast.LENGTH_LONG).show();
+
+       @Override
+       public void onError(String error) {
+           Toast.makeText(PostActivity.this, error, Toast.LENGTH_LONG).show();
+       }
+    };
+    tumblrSessionManager.loginToTumblr(iResult);
    }
    /*
    |------------------------

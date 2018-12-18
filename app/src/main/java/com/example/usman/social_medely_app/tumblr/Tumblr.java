@@ -18,6 +18,7 @@ import com.example.usman.socialmedlyapplication.Main.Message;*/
 //import com.example.usman.socialmedlyapplication.Utils.SectionPagerAddapter;
 
 public class Tumblr extends AppCompatActivity {
+
     private static final String TAG = "Tumblr";
     private Context mContext=Tumblr.this;
     private static final int Activity_Num=3;

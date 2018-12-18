@@ -10,16 +10,17 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:id="@+id/maintopbar"
-        >
+        android:id="@+id/maintopbar">
         <include
             android:id="@+id/main_page_toolbar"
             layout="@layout/app_bar_layout">
 
         </include>
+
         <ImageButton
             android:id="@+id/add_new_post_button"
             android:layout_width="38dp"
@@ -48,6 +49,7 @@
                 android:id="@+id/all_users_post_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
         </FrameLayout>
 
 
